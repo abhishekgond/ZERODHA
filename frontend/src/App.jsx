@@ -1,7 +1,8 @@
+import HomePage from "./landing_page/home/HomePage";
 export const App = () => {
   return (
     <>
-      <h1>Hello World </h1>
+      <HomePage />
     </>
   );
 };
