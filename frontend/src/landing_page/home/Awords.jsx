@@ -5,7 +5,7 @@ function Awards() {
     <section className="max-w-7xl mx-auto px-4 py-12">
       <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
         {/* Left Side - Image */}
-        <div className="flex-1 p-4">
+        <div className="flex-1 p-10">
           <img
             src="images/largestBroker.svg"
             alt="Largest Broker"

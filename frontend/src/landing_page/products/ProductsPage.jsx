@@ -8,12 +8,10 @@ import Universe from "./Universe";
 function ProductsPage() {
   return (
     <>
-      <Navbar />
       <Hero />
       <LeftSection />
       <RightSection />
       <Universe/>
-      <Footer />
     </>
   );
 }

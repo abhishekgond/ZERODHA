@@ -7,10 +7,8 @@ import Footer from "../Footer";
 function SupportPage() {
   return (
     <div>
-      <Navbar />
       <Hero />
       <CreateTicket />
-      <Footer />
     </div>
   );
 }
