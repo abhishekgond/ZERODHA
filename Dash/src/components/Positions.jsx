@@ -1,14 +1,33 @@
-import React from "react";
-import { positions } from "../data/data";
-import { useState } from "react";
-const Positions = () => {
+import axios from "axios";
+import React, { useState, useEffect } from "react";
 
-  const [total ,setTotal] = useState();
+const Positions = () => {
+  const [allPositions, setAllPositions] = useState([]);
+
+  useEffect(() => {
+    axios.get("http://localhost:3002/allPositions").then((res) => {
+      setAllPositions(res.data);
+    });
+  }, []);
+
+  // Calculate totals
+  const totalInvestment = allPositions.reduce(
+    (acc, stock) => acc + stock.avg * stock.qty,
+    0
+  );
+  const currentValue = allPositions.reduce(
+    (acc, stock) => acc + stock.price * stock.qty,
+    0
+  );
+  const profitLoss = currentValue - totalInvestment;
+  const profitLossPercent =
+    totalInvestment > 0 ? (profitLoss / totalInvestment) * 100 : 0;
+
   return (
     <div className="p-4 md:p-8 bg-gray-50 min-h-screen">
       {/* Title */}
       <h3 className="text-lg md:text-2xl font-semibold mb-4 text-gray-800">
-        positions ({positions.length})
+        positions ({allPositions.length})
       </h3>
 
       {/* Table */}
@@ -28,7 +47,7 @@ const Positions = () => {
             </tr>
           </thead>
           <tbody>
-            {positions.map((stock, index) => {
+            {allPositions.map((stock, index) => {
               const curValue = stock.price * stock.qty;
               const isProfit = curValue - stock.avg * stock.qty >= 0.0;
               const profClass = isProfit ? "text-green-600" : "text-red-600";
@@ -65,19 +84,37 @@ const Positions = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
         <div className="bg-white shadow rounded-lg p-4 text-center">
           <h5 className="text-xl font-bold text-gray-800">
-            ₹29,875.<span className="text-base">55</span>
+            ₹
+            {totalInvestment.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
           </h5>
           <p className="text-sm text-gray-500">Total Investment</p>
         </div>
         <div className="bg-white shadow rounded-lg p-4 text-center">
           <h5 className="text-xl font-bold text-gray-800">
-            ₹31,428.<span className="text-base">95</span>
+            ₹
+            {currentValue.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
           </h5>
           <p className="text-sm text-gray-500">Current Value</p>
         </div>
         <div className="bg-white shadow rounded-lg p-4 text-center">
-          <h5 className="text-xl font-bold text-green-600">
-            ₹1,553.40 (+5.20%)
+          <h5
+            className={`text-xl font-bold ${
+              profitLoss >= 0 ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            ₹
+            {profitLoss.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}{" "}
+            ({profitLossPercent >= 0 ? "+" : ""}
+            {profitLossPercent.toFixed(2)}%)
           </h5>
           <p className="text-sm text-gray-500">P&amp;L</p>
         </div>

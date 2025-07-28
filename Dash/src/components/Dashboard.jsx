@@ -1,5 +1,4 @@
 import React from "react";
-import WatchList from "./WatchList";
 import { Route, Routes } from "react-router-dom";
 import Summery from "./Summery";
 import Order from "./Order";
@@ -8,13 +7,11 @@ import Positions from "./Positions";
 import Funds from "./Funds";
 import Apps from "./Apps";
 import WatchList_ from "./WatchList_";
-// import WatchList_ from "./WatchList_";
 
 function Dashboard() {
   return (
     <div className="flex flex-col lg:flex-row mx-auto mt-4  sm:p-0">
       <div className="w-[600px] h-full">
-        {/* <WatchList /> */}
         <WatchList_ />
       </div>
       <div className="w-[1000px]">

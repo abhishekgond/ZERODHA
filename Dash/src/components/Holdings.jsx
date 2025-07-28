@@ -1,12 +1,22 @@
 import React from "react";
-import { holdings } from "../data/data";
+// import { holdings } from "../data/data";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 const Holdings = () => {
+  // useState To Fatch Data
+  const [allHoldings, setAllHolding] = useState([]);
+  useEffect(() => {
+    axios.get("http://localhost:3002/allHoldings").then((res) => {
+      console.log(res.data);
+      setAllHolding(res.data);
+    });
+  }, []);
   return (
     <div className="p-4 md:p-8 bg-gray-50 min-h-screen max-w-[100%]">
       {/* Title */}
       <h3 className="text-lg md:text-2xl font-semibold mb-4 text-gray-800">
-        Holdings ({holdings.length})
+        Holdings ({allHoldings.length})
       </h3>
 
       {/* Table */}
@@ -25,7 +35,7 @@ const Holdings = () => {
             </tr>
           </thead>
           <tbody>
-            {holdings.map((stock, index) => {
+            {allHoldings.map((stock, index) => {
               const curValue = stock.price * stock.qty;
               const isProfit = curValue - stock.avg * stock.qty >= 0.0;
               const profClass = isProfit ? "text-green-600" : "text-red-600";
