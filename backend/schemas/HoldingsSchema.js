@@ -7,3 +7,5 @@ const HoldingsSchema = new Schema({
   net: String,
   day: String,
 });
+
+export default HoldingsSchema;
