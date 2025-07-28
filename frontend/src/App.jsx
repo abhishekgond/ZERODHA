@@ -8,6 +8,7 @@ import ProductPage from "./landing_page/products/ProductsPage";
 import SupportPage from "./landing_page/support/SupportPage";
 import Footer from "./landing_page/Footer";
 import NotFound from "./NotFound";
+import Login from "./landing_page/signup/Login";
 export const App = () => {
   return (
     <>
@@ -15,6 +16,7 @@ export const App = () => {
         <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/pricing" element={<PricingPage />} />
