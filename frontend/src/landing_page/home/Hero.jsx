@@ -1,6 +1,13 @@
 import React from "react";
+import { useNavigate } from "react-router-dom"; // ✅ Import useNavigate
 
 function Hero() {
+  const navigate = useNavigate(); // ✅ Initialize navigate
+
+  const handleSignup = () => {
+    navigate("/signup"); // This should match your signup route
+  };
+
   return (
     <section className="bg-white py-40">
       <div className="max-w-6xl mx-auto px-4 text-center">
@@ -23,7 +30,10 @@ function Hero() {
         </p>
 
         {/* CTA Button */}
-        <button className="px-8 py-2 text-white text-base md:text-lg rounded transition mt-6 w-[200px] bg-[#387ed1] hover:bg-black">
+        <button
+          onClick={handleSignup}
+          className="px-8 py-2 text-white text-base md:text-lg rounded transition mt-6 w-[200px] bg-[#387ed1] hover:bg-black"
+        >
           Sign up for free
         </button>
       </div>

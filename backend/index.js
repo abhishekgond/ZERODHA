@@ -4,24 +4,28 @@ import mongoose from "mongoose";
 import HoldingModel from "./model/HoldingModels.js";
 import PositionModel from "./model/PositionModel.js";
 import cors from "cors";
-import authRoute from "./Routes/AuthRoute.js";
+import signupRoute from "./Routes/signup.js";
+import loginRoute from "./Routes/login.js";
 import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 dotenv.config();
 const app = express();
 
 const PORT = process.env.PORT || 3002;
 const URL = process.env.MONGO_URL;
-app.use(express.json());
 app.use(bodyParser.json());
-// Use appropriate CORS config
-// using Corse to fatch Data on to frontend 
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173", "http://localhost:5174"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
+app.use(express.json());
+app.use(cookieParser());
+
+app.use("/api/signup", signupRoute);
+app.use("/api/login", loginRoute);
 
 // Routes to get all holdings/positions
 app.get("/allHoldings", async (req, res) => {
@@ -41,9 +45,6 @@ app.get("/allPositions", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
-
-// Auth routes
-// app.use("/", authRoute);
 
 // ----------------------------------------
 // Use To Add Data initial in to data base // This is use whan You need to initial send data to data Base

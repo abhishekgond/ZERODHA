@@ -1,12 +1,16 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function Login({ onSuccess }) {
+  // window.location.href = "http://localhost:5174";
+
   const [form, setForm] = useState({ email: "", password: "" });
   const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPwd, setShowPwd] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -16,17 +20,21 @@ export default function Login({ onSuccess }) {
     setMsg("");
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:3002/login", form, {
-        withCredentials: true,
+      const res = await axios.post("http://localhost:3002/api/login", form, {
+        withCredentials: true, // ✅ To receive cookie
       });
-      setMsg(res.data.message);
-      if (onSuccess) onSuccess();
+
+      const token = res.data.token;
+      if (token) {
+        localStorage.setItem("authToken", token); // ✅ Store token
+        if (onSuccess) onSuccess();
+        window.location.href = "http://localhost:5174";
+        // // ✅ Navigate on success
+      } else {
+        setMsg("No token received");
+      }
     } catch (err) {
-      setMsg(
-        err.response && err.response.data && err.response.data.message
-          ? err.response.data.message
-          : "Login failed"
-      );
+      setMsg(err.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }

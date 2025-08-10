@@ -17,7 +17,7 @@ export default function Signup({ onSuccess }) {
     setMsg("");
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:3002/signup", form, {
+      const res = await axios.post("http://localhost:3002/api/signup", form, {
         withCredentials: true,
       });
       setMsg(res.data.message);

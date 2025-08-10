@@ -9,14 +9,14 @@ const TopBar = () => {
         {/* NIFTY (BSE) */}
         <div className="flex space-x-4 mt-4">
           <p className="text-gray-500 font-semibold">NIFTY 50</p>
-          <p className="text-red-500 font-medium">{100.2}</p>
-          <p className="text-xs text-gray-400">-0.25%</p>
+          <p className="text-red-500 font-medium">{25400.2}</p>
+          <p className="text-xs text-gray-400">+1.25%</p>
         </div>
 
         {/* SENSEX (NSE) */}
         <div className="flex space-x-4 mt-4">
           <p className="text-gray-500 font-semibold">SENSEX</p>
-          <p className="text-red-500 font-medium">{100.2}</p>
+          <p className="text-red-500 font-medium">{69300.2}</p>
           <p className="text-xs text-gray-400">-0.15%</p>
         </div>
       </div>

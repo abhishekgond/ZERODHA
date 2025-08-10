@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
+import VerticalGraph from "./VerticalGraph";
 
 const Positions = () => {
   const [allPositions, setAllPositions] = useState([]);
@@ -19,6 +20,19 @@ const Positions = () => {
     (acc, stock) => acc + stock.price * stock.qty,
     0
   );
+
+  const labels = allPositions.map((arr) => arr["name"]);
+
+  const Data = {
+    labels,
+    datasets: [
+      {
+        label: "Stock Price",
+        data: allPositions.map((stock) => stock.price),
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+      },
+    ],
+  };
   const profitLoss = currentValue - totalInvestment;
   const profitLossPercent =
     totalInvestment > 0 ? (profitLoss / totalInvestment) * 100 : 0;
@@ -121,7 +135,7 @@ const Positions = () => {
       </div>
 
       {/* Optional Chart */}
-      {/* <VerticalGraph data={data} /> */}
+      <VerticalGraph data={Data} />
     </div>
   );
 };

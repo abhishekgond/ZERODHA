@@ -1,6 +1,13 @@
 import React from "react";
+import { useNavigate } from "react-router-dom"; // ✅ Import useNavigate
 
 function Universe() {
+  const navigate = useNavigate(); // ✅ Initialize navigate
+
+  const handleSignup = () => {
+    navigate("/signup"); // ✅ Navigate to signup route
+  };
+
   return (
     <section className="w-full bg-white py-12 px-4 md:px-12">
       <div className="max-w-6xl mx-auto text-center space-y-14">
@@ -105,7 +112,10 @@ function Universe() {
 
         {/* CTA Button */}
         <div>
-          <button className="px-8 py-2 text-white text-base md:text-lg rounded transition mt-6 w-[200px] bg-[#387ed1] hover:bg-black">
+          <button
+            onClick={handleSignup} // ✅ Call the function
+            className="px-8 py-2 text-white text-base md:text-lg rounded transition mt-6 w-[200px] bg-[#387ed1] hover:bg-black"
+          >
             Sign up for free
           </button>
         </div>

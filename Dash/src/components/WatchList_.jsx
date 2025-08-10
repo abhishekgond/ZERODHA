@@ -13,12 +13,33 @@ import { DoughnutChart } from "./DoughnutChart";
 const labels = watchlist.map((subArray) => subArray.name);
 
 const WatchList_ = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const itemsPerPage = 8;
+
+  // Filter watchlist based on search term
+  const filteredList = watchlist.filter((stock) =>
+    stock.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredList.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(filteredList.length / itemsPerPage);
+
+  const visiblePages = Array.from(
+    { length: Math.min(10, totalPages) },
+    (_, i) => i + 1
+  );
+
   const data = {
-    labels,
+    labels: filteredList.map((stock) => stock.name),
     datasets: [
       {
         label: "Price",
-        data: watchlist.map((stock) => stock.price),
+        data: filteredList.map((stock) => stock.price),
         backgroundColor: [
           "rgba(255, 99, 132, 0.5)",
           "rgba(54, 162, 235, 0.5)",
@@ -42,23 +63,81 @@ const WatchList_ = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 space-y-6">
+      {/* Search Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <input
           type="text"
           name="search"
           id="search"
           placeholder="Search eg: INFY, BSE, NIFTY"
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setCurrentPage(1); // reset to first page when searching
+          }}
           className="w-full sm:max-w-md p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <span className="text-sm text-gray-500">{watchlist.length} / 50</span>
+        <span className="text-sm text-gray-500">
+          {filteredList.length} / 50
+        </span>
       </div>
 
+      {/* Stock Items */}
       <ul className="space-y-4">
-        {watchlist.map((stock, index) => (
+        {currentItems.map((stock, index) => (
           <WatchListItem stock={stock} key={index} />
         ))}
       </ul>
 
+      {/* Pagination Buttons */}
+      {totalPages > 1 && (
+        <div className="flex justify-center gap-2 mt-6">
+          {/* Previous Button */}
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className={`px-3 py-1 rounded flex items-center justify-center ${
+              currentPage === 1
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-blue-500 text-white hover:bg-blue-600"
+            }`}
+          >
+            ←
+          </button>
+
+          {/* Numbered Buttons */}
+          {visiblePages.map((page) => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`px-3 py-1 rounded ${
+                currentPage === page
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-300 text-black hover:bg-gray-400"
+              }`}
+            >
+              {page}
+            </button>
+          ))}
+
+          {/* Next Button */}
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+            className={`px-3 py-1 rounded flex items-center justify-center ${
+              currentPage === totalPages
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-blue-500 text-white hover:bg-blue-600"
+            }`}
+          >
+            →
+          </button>
+        </div>
+      )}
+
+      {/* Doughnut Chart */}
       <div className="max-w-sm mx-auto">
         <DoughnutChart data={data} />
       </div>
@@ -125,7 +204,7 @@ const WatchListActions = ({ uid }) => {
       label: "Sell",
       icon: null,
       color: "bg-red-500 hover:bg-red-600",
-      onClick: () => {}, // replace with Sell functionality
+      onClick: () => {},
       tooltip: "Sell (S)",
       ariaLabel: "Sell",
     },
@@ -133,7 +212,7 @@ const WatchListActions = ({ uid }) => {
       label: "",
       icon: <MdBarChart />,
       color: "bg-blue-500 hover:bg-blue-600",
-      onClick: () => {}, // Analytics logic
+      onClick: () => {},
       tooltip: "Analytics (A)",
       ariaLabel: "Analytics",
     },
@@ -141,24 +220,23 @@ const WatchListActions = ({ uid }) => {
       label: "",
       icon: <MdDelete />,
       color: "bg-gray-600 hover:bg-gray-700",
-      onClick: () => {}, // Delete logic
+      onClick: () => {},
       tooltip: "Delete",
       ariaLabel: "Delete",
     },
-    // Optional: Keep More button if you want overflow actions.
     {
       label: "",
       icon: <FaEllipsisH />,
       color: "bg-gray-500 hover:bg-gray-600",
-      onClick: () => {}, // More menu
+      onClick: () => {},
       tooltip: "More",
       ariaLabel: "More",
     },
   ];
 
   return (
-    <div className="flex gap-2 mt-3 flex-wrap ">
-      {buttonConfig.map((btn, idx) => (
+    <div className="flex gap-2 mt-3 flex-wrap">
+      {buttonConfig.map((btn) => (
         <div
           key={btn.tooltip}
           className="relative flex items-center"
@@ -172,12 +250,11 @@ const WatchListActions = ({ uid }) => {
             onClick={btn.onClick}
             aria-label={btn.ariaLabel}
             type="button"
-            tabIndex={0}
           >
             {btn.icon ? btn.icon : btn.label}
           </button>
           {tooltip === btn.tooltip && (
-            <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-black text-white text-xs rounded px-2 py-1 z-20 pointer-events-none opacity-90 shadow-lg ">
+            <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-black text-white text-xs rounded px-2 py-1 z-20 pointer-events-none opacity-90 shadow-lg">
               {btn.tooltip}
             </div>
           )}

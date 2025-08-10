@@ -1,17 +1,42 @@
-import React from "react";
-// import { holdings } from "../data/data";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import VerticalGraph from "./VerticalGraph"; // Make sure this file exists
 
 const Holdings = () => {
-  // useState To Fatch Data
   const [allHoldings, setAllHolding] = useState([]);
+
   useEffect(() => {
     axios.get("http://localhost:3002/allHoldings").then((res) => {
-      console.log(res.data);
       setAllHolding(res.data);
     });
   }, []);
+
+  const totalInvestment = allHoldings.reduce(
+    (acc, stock) => acc + stock.avg * stock.qty,
+    0
+  );
+  const currentValue = allHoldings.reduce(
+    (acc, stock) => acc + stock.price * stock.qty,
+    0
+  );
+  const profitLoss = currentValue - totalInvestment;
+  const profitLossPercent =
+    totalInvestment > 0 ? (profitLoss / totalInvestment) * 100 : 0;
+  const isProfit = profitLoss >= 0;
+
+  // 📊 Chart Data
+  const labels = allHoldings.map((arr) => arr.name);
+  const Data = {
+    labels,
+    datasets: [
+      {
+        label: "Stock Price",
+        data: allHoldings.map((stock) => stock.price),
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+      },
+    ],
+  };
+
   return (
     <div className="p-4 md:p-8 bg-gray-50 min-h-screen max-w-[100%]">
       {/* Title */}
@@ -67,28 +92,51 @@ const Holdings = () => {
 
       {/* Summary Row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+        {/* Total Investment */}
         <div className="bg-white shadow rounded-lg p-4 text-center">
           <h5 className="text-xl font-bold text-gray-800">
-            ₹29,875.<span className="text-base">55</span>
+            ₹
+            {totalInvestment.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
           </h5>
           <p className="text-sm text-gray-500">Total Investment</p>
         </div>
+
+        {/* Current Value */}
         <div className="bg-white shadow rounded-lg p-4 text-center">
           <h5 className="text-xl font-bold text-gray-800">
-            ₹31,428.<span className="text-base">95</span>
+            ₹
+            {currentValue.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
           </h5>
           <p className="text-sm text-gray-500">Current Value</p>
         </div>
+
+        {/* Profit / Loss */}
         <div className="bg-white shadow rounded-lg p-4 text-center">
-          <h5 className="text-xl font-bold text-green-600">
-            ₹1,553.40 (+5.20%)
+          <h5
+            className={`text-xl font-bold ${
+              isProfit ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            ₹
+            {profitLoss.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}{" "}
+            ({isProfit ? "+" : ""}
+            {profitLossPercent.toFixed(2)}%)
           </h5>
           <p className="text-sm text-gray-500">P&amp;L</p>
         </div>
       </div>
 
-      {/* Optional Chart */}
-      {/* <VerticalGraph data={data} /> */}
+      {/* Chart */}
+      <VerticalGraph data={Data} />
     </div>
   );
 };

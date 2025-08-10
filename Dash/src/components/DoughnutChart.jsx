@@ -6,7 +6,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 export function DoughnutChart({ data }) {
   return (
-    <div className="w-full max-w-xs mx-auto bg-white rounded-xl shadow p-4 flex items-center justify-center">
+    <div className="mx-auto bg-white rounded-xl shadow p-4 flex items-center justify-center">
       {/* Responsive flex container centers the chart, and max-w-xs constrains size on desktop */}
       <Doughnut
         data={data}
@@ -15,7 +15,7 @@ export function DoughnutChart({ data }) {
           responsive: true,
           plugins: {
             legend: {
-              position: "bottom",
+              position: "top",
               labels: {
                 color: "#6B7280", // Tailwind gray-500
                 font: { size: 12 },
