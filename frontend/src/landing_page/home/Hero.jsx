@@ -1,11 +1,10 @@
 import React from "react";
-import { useNavigate } from "react-router-dom"; // ✅ Import useNavigate
+import { useNavigate } from "react-router-dom"; 
 
 function Hero() {
-  const navigate = useNavigate(); // ✅ Initialize navigate
-
+  const navigate = useNavigate(); 
   const handleSignup = () => {
-    navigate("/signup"); // This should match your signup route
+    navigate("/signup"); 
   };
 
   return (
@@ -14,7 +13,7 @@ function Hero() {
         {/* Image */}
         <img
           src="/images/homeHero.png" // Make sure your image is inside public/images/
-          alt="Dashboard Preview"
+          alt="Hero image"
           className="mx-auto mb-10 w-full max-w-4xl"
         />
 
